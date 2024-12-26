@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 function App() {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
+  const [username,setUsername]  = useState("");
+  const [number, setNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState({ value: "", isTouched: false });
   const [confirmPassword, setConfirmPassword] = useState({ value: "", isTouched: false });
@@ -16,14 +18,20 @@ function App() {
     return regex.test(email);
   };
 
+  // 10 digits check krne ke liye
+  const validateNumber = (number) => {
+    const regex = /^[0-9]{10}$/; 
+    return regex.test(number);
+  };
+
 
   //for checking the validity of the form
   const isFormValid = () => {
     return (
-      name.trim() !== "" &&
+      name.trim() !== "" && username.trim()!== "" &&
       validateEmail(email) &&
       password.value.length >= 8 &&
-      gender !== "" &&
+      gender !== "" && validateNumber(number) &&
       password.value === confirmPassword.value
     );
   };
@@ -32,8 +40,10 @@ function App() {
   //for manual clearing of the form
   const clearForm = () => {
     setName("");
+    setUsername("");
     setGender("");
     setEmail("");
+    setNumber("");
     setPassword({ value: "", isTouched: false });
     setConfirmPassword({ value: "", isTouched: false });
   };
@@ -46,8 +56,10 @@ function App() {
     //the object
     const userData = {
       name: name,
+      username : username,
       gender: gender,
       email: email,
+      number : number,
       password: password.value,
       confirmPassword: confirmPassword.value,
     };
@@ -101,6 +113,18 @@ function App() {
             />
           </div>
 
+          {/* Username */}
+          <div className="mb-4">
+            <label className="block text-gray-600 font-medium mb-2">Username:</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your Username"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
           {/* email ke liye */}
           <div className="mb-4">
             <label className="block text-gray-600 font-medium mb-2">Email:</label>
@@ -113,6 +137,21 @@ function App() {
             />
             {!validateEmail(email) && email.length > 0 && (
               <p className="text-red-500 text-sm mt-1">Invalid email format</p>
+            )}
+          </div>
+
+          {/* Phone Number ke liye */}
+          <div className="mb-4">
+            <label className="block text-gray-600 font-medium mb-2">Phone Number:</label>
+            <input
+              type="text"
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              placeholder="Enter your phone number"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {!validateNumber(number) && number.length > 0 && (
+              <p className="text-red-500 text-sm mt-1">Number must be 10 digits</p>
             )}
           </div>
 
@@ -169,10 +208,7 @@ function App() {
             >
               Register
             </button>
-            <button
-              type="button"
-              onClick={clearForm}
-              className="px-6 py-2 mt-3 rounded-lg text-gray-700 border border-gray-400 hover:bg-gray-100"
+            <button type="button" onClick={clearForm} className="px-6 py-2 mt-3 rounded-lg text-gray-700 border border-gray-400 hover:bg-gray-100"
             >
               Clear Form
             </button>

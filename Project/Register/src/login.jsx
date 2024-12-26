@@ -73,7 +73,7 @@ function LoginPage() {
             type="password"
             value={password.value}
             onChange={(e) => setPassword({ ...password, value: e.target.value })}
-            onBlur={() => setConfirmPassword({ ...password, isTouched: true })}
+            onBlur={() => setPassword({ ...password, isTouched: true })}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
             required
           />

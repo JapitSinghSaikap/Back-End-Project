@@ -1,8 +1,16 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
+const nodemailer = require("nodemailer");
 const app = express();
+
+const transporter = nodemailer.createTransport({
+  service: "gmail", 
+  auth: {
+    user: "singhjap302@gmail.com", 
+    pass: "ynrgdchmokeikfcu", 
+  },
+});
 
 
 
@@ -15,16 +23,34 @@ let users = [];
 //frontend se data receive krene ke liye
 app.post("/register", (req, res) => {
   //using the body-barser for the req and res
-  const { name, email, password, gender} = req.body;
+  const { name, username,number, email, password, gender} = req.body;
   const existingUser = users.find((user) => user.email === email);
   if (existingUser) {
     return res.status(400).json({ message: "User with this email already exists." });
   }
-  const newUser = { name, email, password, gender };
+  const newUser = { name,username, email, number, password, gender };
   users.push(newUser);
   console.log(newUser);
+
+  const mailMessage = {
+    from: "singhjap302@gmail.com", // Sender email address
+    to: email, 
+    subject: "Registration Successful", 
+    text: `Hi ${username},\n\nYour registration was successful.\n\nThank you for registering with us Good Sir/Madam 🤖!`,
+  };
+
+  // Send email after successful registration
+  transporter.sendMail(mailMessage, (error, info) => {
+    if (error) {
+      console.error("Error sending email:", error);
+      return res.status(500).json({ message: "Registration successful, but email could not be sent." });
+    }
+    console.log("Email sent Successfully ");
+  });
+
   return res.status(200).json({ message: "User registered successfully", user: newUser });//used status code for response (200-299)->for good
 });
+
 
 
 
